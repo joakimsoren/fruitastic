@@ -26,39 +26,16 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import { State, Action } from "vuex-class";
 import { IFruit } from "../fruits/types/fruit";
 import { EFruitColor } from "../fruits/types/enum/fruit-color";
 import Fruit from "../fruits/components/Fruit.vue";
-import { CapacitorVideoPlayer } from "capacitor-video-player/dist/esm/web";
+import { namespace } from "../fruits/store/fruit.store";
 
 @Component
 export default class Learn extends Vue {
-  public fruits: IFruit[] = [
-    {
-      id: 1,
-      name: "Banana",
-      videoName: "Banana.mov",
-      color: EFruitColor.Yellow
-    },
-    {
-      id: 2,
-      name: "Apple",
-      videoName: "Apple.mov",
-      color: EFruitColor.Green
-    },
-    {
-      id: 3,
-      name: "Watermelon",
-      videoName: "Watermelon.mov",
-      color: EFruitColor.Green
-    },
-    {
-      id: 4,
-      name: "Orange",
-      videoName: "Orange.mp4",
-      color: EFruitColor.Orange
-    }
-  ];
+  @State("fruits", { namespace }) fruits: IFruit[];
+  @Action("loadFruits", { namespace }) loadFruits: any;
 
   async openFruit(fruit: IFruit) {
     const modal = await this.$ionic.modalController.create({
@@ -67,7 +44,7 @@ export default class Learn extends Vue {
         parent: this,
         propsData: {
           fruit
-        },
+        }
       }
     });
     await modal.present();
@@ -75,6 +52,10 @@ export default class Learn extends Vue {
 
   goBack() {
     this.$router.back();
+  }
+
+  mounted() {
+    this.loadFruits();
   }
 }
 </script>
